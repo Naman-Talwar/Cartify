@@ -1,151 +1,155 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import Navbar from './Navbar';
-import BottomNav from './BottomNav';
-
-const CategoryButton = ({ icon, label, isActive }) => (
-  <Link 
-    to={`/${label.toLowerCase()}`} 
-    className={`flex flex-col items-center gap-2 p-4 ${
-      isActive ? 'opacity-100' : 'opacity-50 hover:opacity-75'
-    }`}
-  >
-    <img src={icon} alt={label} className="w-12 h-12 object-contain" />
-    <span className="text-sm font-medium">{label}</span>
-  </Link>
-);
+import { useNavigate } from 'react-router-dom';
 
 const Search = ({ isOpen, onClose }) => {
-  const [searchQuery, setSearchQuery] = useState('');
+  const navigate = useNavigate();
   const [selectedImage, setSelectedImage] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
-  const categories = [
-    { icon: './assets/Search/Outerwear.jpg', label: 'Outerwear' },
-    { icon: './assets/Search/Outerwear.jpg', label: 'Sweaters' },
-    { icon: './assets/Search/Outerwear.jpg', label: 'T-Shirts' },
-    { icon: './assets/Search/Outerwear.jpg', label: 'Shirts' },
-    { icon: './assets/Search/Outerwear.jpg', label: 'Bottoms' },
-    { icon: './assets/Search/Outerwear.jpg', label: 'Dresses' },
-    { icon: './assets/Search/Outerwear.jpg', label: 'Sport' },
-    { icon: './assets/Search/Outerwear.jpg', label: 'Innerwear' },
-    { icon: './assets/Search/Outerwear.jpg', label: 'Loungewear' },
-    { icon: './assets/Search/Outerwear.jpg', label: 'Accessories' },
-    { icon: './assets/Search/Outerwear.jpg', label: 'Maternity' },
-    { icon: './assets/Search/Outerwear.jpg', label: 'UV Protection' },
-    { icon: './assets/Search/Outerwear.jpg', label: 'HEATTECH' },
-    { icon: './assets/Search/Outerwear.jpg', label: 'Special' },
-    { icon: './assets/Search/Outerwear.jpg', label: 'AIRism' },
-    { icon: './assets/Search/Outerwear.jpg', label: 'UT' },
-    { icon: './assets/Search/Outerwear.jpg', label: 'Peace' },
-    { icon: './assets/Search/Outerwear.jpg', label: 'Sale' },
-    { icon: './assets/Search/Outerwear.jpg', label: 'New Arrival' },
-    { icon: './assets/Search/Outerwear.jpg', label: 'Extra Sizes' }
-  ];
-
-  const handleImageUpload = (event) => {
-    const file = event.target.files[0];
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setSelectedImage(reader.result);
-      };
-      reader.readAsDataURL(file);
+      setSelectedImage(URL.createObjectURL(file));
     }
   };
 
-  if (!isOpen) return null;
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate('/search-results', { state: { query: searchQuery } });
+      onClose();
+    }
+  };
 
   return (
-    <div className="fixed inset-0 bg-white z-50 flex flex-col">
-      {/* Navbar */}
-      <Navbar />
+    <div className={`fixed inset-0 z-50 flex items-center justify-center transition-transform duration-300 ${isOpen ? 'translate-y-0' : 'translate-y-full'}`}>
+      {/* Backdrop */}
+      <div className={`fixed inset-0 bg-black bg-opacity-50 transition-opacity duration-300 ${isOpen ? 'opacity-50' : 'opacity-0'}`} onClick={onClose}></div>
+      
+      {/* Search Box */}
+      <div className="relative w-3/5 h-3/5 max-w-none px-7 py-10 bg-white rounded-lg shadow-lg z-10">
+        <button className="absolute top-4 right-4 text-4xl cursor-pointer text-black hover:text-red-500" onClick={onClose}>
+          ×
+        </button>
 
-      {/* Main Content - Scrollable */}
-      <div className="flex-1 overflow-y-auto">
-        {/* Categories Grid */}
-        <div className="p-4">
-          <div className="grid grid-cols-4 gap-4">
-            {categories.map((category, index) => (
-              <CategoryButton
-                key={index}
-                icon={category.icon}
-                label={category.label}
-                isActive={index === 0}
-              />
-            ))}
-          </div>
-
-          {/* From CARTIFY Section */}
-          <div className="mt-8 mb-24"> {/* Added bottom margin for search bar */}
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold">From CARTIFY</h2>
-              <Link to="/all" className="text-blue-600 text-sm">VIEW ALL</Link>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="aspect-square bg-gray-100 rounded-lg"></div>
-              <div className="aspect-square bg-gray-100 rounded-lg"></div>
-              <div className="aspect-square bg-gray-100 rounded-lg"></div>
-              <div className="aspect-square bg-gray-100 rounded-lg"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Fixed Search Bar at Bottom */}
-      <div className="fixed bottom-24 left-0 right-0 bg-white px-4 py-3 border-t border-gray-200">
-        <div className="flex items-center gap-4">
-          <div className="flex-1 flex items-center bg-gray-100 rounded-full px-4 py-2">
-            <svg
-              className="w-5 h-5 text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
+        {/* Search Bar with Icon */}
+        <form onSubmit={handleSearch}>
+          <div className="flex items-center border-b-2 border-black relative">
             <input
               type="text"
-              placeholder="Search by keyword"
-              className="flex-1 bg-transparent outline-none ml-2 text-sm"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search for products..."
+              autoFocus
+              className="w-full p-4 text-2xl bg-transparent outline-none pr-12"
             />
+            <button type="submit" className="absolute right-4 top-1/2 transform -translate-y-1/2">
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                className="text-gray-500 cursor-pointer hover:text-gray-950"
+              >
+                <path
+                  d="M21 21L16.65 16.65M19 11C19 15.4183 15.4183 19 11 19C6.58172 19 3 15.4183 3 11C3 6.58172 6.58172 3 11 3C15.4183 3 19 6.58172 19 11Z"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  fill="none"
+                />
+              </svg>
+            </button>
           </div>
+        </form>
 
-          {/* Image Upload Button */}
-          <label className="cursor-pointer">
-            <input
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={handleImageUpload}
-            />
+        {/* Image Upload Section */}
+        <div className="mt-6 flex items-center gap-4">
+          <label className="flex items-center gap-3 px-4 py-3 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-black transition-colors">
             <svg
-              className="w-6 h-6 text-gray-600"
-              fill="none"
-              stroke="currentColor"
+              width="24"
+              height="24"
               viewBox="0 0 24 24"
+              className="text-gray-600"
             >
               <path
+                d="M19 3H5C3.89543 3 3 3.89543 3 5V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V5C21 3.89543 20.1046 3 19 3Z"
+                stroke="currentColor"
+                strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                fill="none"
+              />
+              <path
+                d="M8.5 10C9.32843 10 10 9.32843 10 8.5C10 7.67157 9.32843 7 8.5 7C7.67157 7 7 7.67157 7 8.5C7 9.32843 7.67157 10 8.5 10Z"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M21 15L16 10L5 21"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               />
             </svg>
+            <span className="text-gray-600">Add image to search</span>
+            <input
+              type="file"
+              id="file"
+              accept="image/*"
+              onChange={handleImageUpload}
+              className="hidden"
+            />
           </label>
+          
+          <button 
+            className="px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors cursor-pointer"
+            onClick={() => {/* Handle image search */}}
+          >
+            Search
+          </button>
+        </div>
+
+        {/* Preview uploaded image */}
+        {selectedImage && (
+          <div className="mt-4 relative inline-block">
+            <img
+              src={selectedImage}
+              alt="Upload preview"
+              className="max-h-32 rounded-lg object-contain"
+            />
+            <button
+              onClick={() => setSelectedImage(null)}
+              className="absolute -top-2 -right-2 p-1 bg-black rounded-full text-white hover:bg-gray-800"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24">
+                <path
+                  d="M18 6L6 18M6 6L18 18"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
+          </div>
+        )}
+
+        {/* Quick Search Section */}
+        <div className="flex items-center justify-center gap-4 font-normal mt-30">
+          <p>Quick Search:</p>
+          <ul className="flex list-none p-0 m-0">
+            <li className="mr-4 cursor-pointer hover:underline">Jackets</li>
+            <li className="mr-4 cursor-pointer hover:underline">Shirts</li>
+            <li className="mr-4 cursor-pointer hover:underline">Tops</li>
+          </ul>
         </div>
       </div>
-
-      {/* Bottom Navigation */}
-      <BottomNav onSearchOpen={onClose} />
     </div>
   );
 };
 
-export default Search; 
+export default Search;

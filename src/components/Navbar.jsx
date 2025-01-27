@@ -5,7 +5,7 @@ import { ShoppingCart } from 'lucide-react'; // Using a cart icon from lucide-re
 const Navbar = () => {
   return (
     <nav className="fixed top-0 left-0 w-full bg-transparent z-10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between py-5">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between py-1">
         {/* Logo */}
         <div className="text-2xl font-bold tracking-wider">
           <Link to="/" className="text-black no-underline">Cartify</Link>

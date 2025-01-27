@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import login from '../assets/login.png';
+import login from '../assets/login.jpg';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -167,11 +167,6 @@ const Login = () => {
                   <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
                     Remember Me
                   </label>
-                </div>
-                <div className="text-sm">
-                  <a href="#" className="font-medium text-blue-600 hover:text-blue-500">
-                    Forgot Password?
-                  </a>
                 </div>
               </div>
             </div>

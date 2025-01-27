@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import signup from '../assets/signup.png';
+import signup from '../assets/signup.jpg';
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -189,22 +189,6 @@ const Signup = () => {
                   required
                   className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                   value={formData.confirmPassword}
-                  onChange={handleChange}
-                />
-              </div>
-
-              {/* Date of Birth */}
-              <div>
-                <label htmlFor="dateOfBirth" className="block text-sm font-medium text-gray-700">
-                  Date of Birth
-                </label>
-                <input
-                  id="dateOfBirth"
-                  name="dateOfBirth"
-                  type="date"
-                  required
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                  value={formData.dateOfBirth}
                   onChange={handleChange}
                 />
               </div>

@@ -7,6 +7,7 @@ import BottomNav from './components/BottomNav.jsx';
 import CustomerHome from './components/CustomerHome.jsx';
 import SellerHome from './components/SellerHome.jsx';
 import Search from './components/Search.jsx';
+import SearchedProducts from './components/SearchedProducts.jsx';
 
 const App = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -30,7 +31,7 @@ const App = () => {
         <Route path="/men" element={<CustomerHome />} />
         <Route path="/kids" element={<CustomerHome />} />
         <Route path="/baby" element={<CustomerHome />} />
-        {/* Redirect to login by default */}
+        <Route path="/search-results" element={<SearchedProducts />} />
         <Route path="/" element={<Navigate to="/login" replace />} />
       </Routes>
       <Search isOpen={isSearchOpen} onClose={handleSearchClose} />
