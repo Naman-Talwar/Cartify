@@ -9,10 +9,12 @@ import SellerHome from './components/SellerHome.jsx';
 import Search from './components/Search.jsx';
 import SearchedProducts from './components/SearchedProducts.jsx';
 import Cart from './components/Cart';
+import Chatbot from './components/Chatbot.jsx';
 
 const App = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [cartItems, setCartItems] = useState([]);
+  const [isChatbotOpen, setIsChatbotOpen] = useState(false);
 
   const handleSearchOpen = () => {
     setIsSearchOpen(true);
@@ -50,11 +52,18 @@ const App = () => {
     setCartItems(prev => prev.filter(item => item.id !== id));
   };
 
+  const handleChatToggle = () => {
+    setIsChatbotOpen(!isChatbotOpen);
+  };
+
   return (
     <BrowserRouter>
       <div className="min-h-screen bg-gray-50">
         <div className="flex flex-col min-h-screen">
-          <Navbar cartItemsCount={cartItems.length} />
+          <Navbar 
+            cartItemsCount={cartItems.length} 
+            onChatToggle={handleChatToggle} 
+          />
           <main className="flex-grow pt-16 pb-24 md:pb-16">
             <Routes>
               <Route path="/login" element={<Login />} />
@@ -71,6 +80,7 @@ const App = () => {
           </main>
           <Search isOpen={isSearchOpen} onClose={handleSearchClose} />
           <BottomNav onSearchOpen={handleSearchOpen} />
+          <Chatbot isOpen={isChatbotOpen} onClose={() => setIsChatbotOpen(false)} />
         </div>
       </div>
     </BrowserRouter>
