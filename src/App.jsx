@@ -8,9 +8,11 @@ import CustomerHome from './components/CustomerHome.jsx';
 import SellerHome from './components/SellerHome.jsx';
 import Search from './components/Search.jsx';
 import SearchedProducts from './components/SearchedProducts.jsx';
+import Cart from './components/Cart';
 
 const App = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [cartItems, setCartItems] = useState([]);
 
   const handleSearchOpen = () => {
     setIsSearchOpen(true);
@@ -20,11 +22,39 @@ const App = () => {
     setIsSearchOpen(false);
   }
 
+  const addToCart = (product) => {
+    setCartItems(prev => {
+      const existingItem = prev.find(item => item.id === product.id);
+      if (existingItem) {
+        return prev.map(item =>
+          item.id === product.id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        );
+      }
+      return [...prev, { ...product, quantity: 1 }];
+    });
+  };
+
+  const updateQuantity = (id, quantity) => {
+    setCartItems(prev =>
+      quantity === 0
+        ? prev.filter(item => item.id !== id)
+        : prev.map(item =>
+            item.id === id ? { ...item, quantity } : item
+          )
+    );
+  };
+
+  const removeFromCart = (id) => {
+    setCartItems(prev => prev.filter(item => item.id !== id));
+  };
+
   return (
     <BrowserRouter>
       <div className="min-h-screen bg-gray-50">
         <div className="flex flex-col min-h-screen">
-          <Navbar />
+          <Navbar cartItemsCount={cartItems.length} />
           <main className="flex-grow pt-16 pb-24 md:pb-16">
             <Routes>
               <Route path="/login" element={<Login />} />
@@ -34,7 +64,8 @@ const App = () => {
               <Route path="/men" element={<CustomerHome />} />
               <Route path="/kids" element={<CustomerHome />} />
               <Route path="/baby" element={<CustomerHome />} />
-              <Route path="/search-results" element={<SearchedProducts />} />
+              <Route path="/cart" element={<Cart cartItems={cartItems} updateQuantity={updateQuantity} removeFromCart={removeFromCart} />} />
+              <Route path="/search-results" element={<SearchedProducts addToCart={addToCart} />} />
               <Route path="/" element={<Navigate to="/login" replace />} />
             </Routes>
           </main>
